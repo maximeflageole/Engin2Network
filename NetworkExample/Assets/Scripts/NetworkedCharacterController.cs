@@ -11,6 +11,16 @@ public class NetworkedCharacterController : NetworkBehaviour
     private NavMeshAgent m_navmeshAgent;
     [SerializeField]
     private Animator m_animator;
+    [SerializeField]
+    private Camera m_camera;
+
+    private void Start()
+    {
+        if (isLocalPlayer)
+        {
+            m_camera.gameObject.SetActive(true);
+        }
+    }
 
     // Update is called once per frame
     void Update()
@@ -35,6 +45,11 @@ public class NetworkedCharacterController : NetworkBehaviour
             {
                 m_navmeshAgent.SetDestination(hit.point);
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            NetworkedWall._instance.SetActiveNetworked();
         }
     }
 }
