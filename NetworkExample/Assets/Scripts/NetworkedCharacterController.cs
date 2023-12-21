@@ -7,6 +7,9 @@ using Mirror;
 public class NetworkedCharacterController : NetworkBehaviour
 {
     private const float MINIMUM_MOVEMENT_SPEED = 0.01f;
+
+    [SerializeField]
+    private BoxCollider m_shieldCollider;
     [SerializeField]
     private NavMeshAgent m_navmeshAgent;
     [SerializeField]
@@ -51,5 +54,28 @@ public class NetworkedCharacterController : NetworkBehaviour
         {
             NetworkedWall._instance.SetActiveNetworked();
         }
+        if (Input.GetMouseButtonDown(0))
+        { 
+            Attack();
+        }
+    }
+
+    private void Attack()
+    {
+        var mr = m_shieldCollider.GetComponent<MeshRenderer>();
+        mr.enabled = true;
+        m_shieldCollider.enabled = true;
+        m_animator.SetInteger("Action", 1);
+        m_animator.SetInteger("TriggerNumber", 4);
+        m_animator.SetTrigger("Trigger");
+        StartCoroutine(DisableShield(0.5f));
+    }
+
+    private IEnumerator DisableShield(float timer = 1.0f)
+    {
+        yield return new WaitForSeconds(timer);
+        m_shieldCollider.enabled = false;
+        var mr = m_shieldCollider.GetComponent<MeshRenderer>();
+        mr.enabled = false;
     }
 }
